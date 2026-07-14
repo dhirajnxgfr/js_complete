@@ -6,16 +6,23 @@ button.addEventListener('click', function() {
   getWeather(city);
 });
 async function getWeather(city) {
-  const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}`);
-  const geoData = await geoResponse.json();
-  const lat = geoData.results[0].latitude;
-  const lon = geoData.results[0].longitude;
+  try {
+    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}`);
+    const geoData = await geoResponse.json();
+    const lat = geoData.results[0].latitude;
+    const lon = geoData.results[0].longitude;
 
-  const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-  const weatherData = await weatherResponse.json();
+    const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const weatherData = await weatherResponse.json();
 
-  const temp = weatherData.current_weather.temperature;
+    const temp = weatherData.current_weather.temperature;
 
-  const result = document.getElementById('result');
-  result.textContent = `Temperature: ${temp}°C`;
+    const result = document.getElementById('result');
+    result.textContent = `Temperature: ${temp}°C`;
+
+  } catch (error) {
+    const result = document.getElementById('result');
+    result.textContent = `Something went wrong: city not found`;
+    console.log('Error:', error);
+  }
 }
